@@ -1,0 +1,6 @@
+.git
+k8s
+scripts
+*.md
+.env
+__pycache__

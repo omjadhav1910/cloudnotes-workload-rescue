@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: cloudnotes-workload:1.0.0
+      imagePullPolicy: Never
+      command: ["python", "-c", "import time; time.sleep(10**8)"]
+      env:
+        - name: API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudnotes-access
+              key: API_TOKEN
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: [ALL]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
