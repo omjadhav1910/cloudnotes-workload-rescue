@@ -8,4 +8,5 @@ kubectl create namespace "$namespace" --dry-run=client -o yaml | kubectl apply -
 python3 -c 'import secrets; print(secrets.token_hex(24), end="")' | kubectl -n "$namespace" create secret generic cloudnotes-access --from-file=API_TOKEN=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
 kubectl -n "$namespace" apply -f k8s/
 kubectl -n "$namespace" wait --for=condition=Ready pod/client --timeout=90s
+kubectl -n "$namespace" wait --for=jsonpath='{.status.phase}'=Bound pvc/cloudnotes-data --timeout=90s
 kubectl -n "$namespace" get pods,pvc
