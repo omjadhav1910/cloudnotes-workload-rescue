@@ -5,7 +5,9 @@ namespace=${NAMESPACE:-cloudnotes-rescue}
 # Instructor runs only against the intended disposable local assessment cluster.
 kubectl create namespace "$namespace" --dry-run=client -o yaml | kubectl apply -f -
 # Random disposable practice value, generated without exposing it in terminal output.
-python3 -c 'import secrets; print(secrets.token_hex(24), end="")' | kubectl -n "$namespace" create secret generic cloudnotes-access --from-file=API_TOKEN=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
+if ! kubectl -n "$namespace" get secret cloudnotes-access >/dev/null 2>&1; then
+  python3 -c 'import secrets; print(secrets.token_hex(24), end="")' | kubectl -n "$namespace" create secret generic cloudnotes-access --from-file=API_TOKEN=/dev/stdin
+fi
 kubectl -n "$namespace" apply -f k8s/
 kubectl -n "$namespace" wait --for=condition=Ready pod/client --timeout=90s
 kubectl -n "$namespace" wait --for=jsonpath='{.status.phase}'=Bound pvc/cloudnotes-data --timeout=90s
