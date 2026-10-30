@@ -41,10 +41,10 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: cloudnotes-access
-                  key: ACCESS_TOKEN
+                  key: API_TOKEN
           volumeMounts:
             - name: notes
-              mountPath: /archive
+              mountPath: /data
           readinessProbe:
             httpGet:
               path: /health
